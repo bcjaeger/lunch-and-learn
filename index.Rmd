@@ -1,0 +1,495 @@
+---
+title: "Introduction to R"
+author: "Byron C. Jaeger"
+institute: "Wake Forest School of Medicine"
+date: "2022-04-20 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+class: center, middle
+
+```{css fonts, echo=FALSE}
+
+.blue { color: DodgerBlue; }
+
+.larger { font-size: 160px; }
+
+.largish {font-size: 40px; }
+
+.blue_background { 
+  font-size: 40px;
+  background-color: rgba(30,144,255, 0.1); 
+}
+
+.rainbow-text {
+  background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+```
+
+```{r setup, include=FALSE}
+
+options(htmltools.dir.version = FALSE)
+
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE,
+                      warning = FALSE, 
+                      fig.align = 'center',
+                      fig.height = 4, 
+                      fig.width = 8,
+                      dpi = 300)
+
+library(xaringanthemer)
+library(ggplot2)
+library(palmerpenguins)
+library(dplyr)
+
+style_duo_accent(
+  primary_color = "#1E6B52",
+  secondary_color = "#000000",
+  inverse_header_color = "#CFC580"
+)
+
+```
+
+# .larger[HELLO]
+
+My name is Byron
+
+---
+background-image: url(img/run_R_kids.png)
+background-size: 100%
+
+---
+class: center, middle
+
+.larger[How about you?]
+
+---
+
+<iframe src="https://app.sli.do/event/eQ72CRDMQQ7o4Jxk55iL3T" height="100%" width="100%" frameBorder="0" style="min-height: 560px;" title="Slido"></iframe>
+
+---
+
+## A brief history of R
+
+- 1976: Bell Labs develops S
+
+--
+
+- 1991: R, an implementation of S, created by Ross Ihaka and Robert Gentleman at the university of Auckland in 1991
+
+--
+
+- 1995: R declares as an open source project under GNU licenses. 
+
+--
+
+- 1997: R core group is formed.
+
+--
+
+- 2000: R version 1.0.0 is released
+
+--
+
+- 2008 R ranked 73rd most popular language by TIOBE index
+
+--
+
+- 2012 through 2019 R Markdown + tidyverse
+
+--
+
+- 2020: R ranked 8th most popular language by TIOBE index.
+
+---
+
+# Five reasons to use R
+
+.largish[
+1.	R is glue
+
+1.	Graphics
+
+1.	Markdown
+
+1.	Literate programming
+
+1.	Projects
+]
+
+---
+
+# Five reasons to use R
+
+.largish[
+1.	.blue[R is glue]
+
+1.	.blue[Graphics]
+
+1.	.blue[Markdown]
+
+1.	.rainbow-text[Literate programming]
+
+1.	.rainbow-text[Projects]
+]
+
+---
+
+class: center, middle
+
+# .larger[R is glue]
+
+---
+
+## R is glue
+
+S was originally developed so that statisticians at Bell labs could run their Fortran scripts interactively.
+
+- R additionally supports interface to C/C++ and Java.
+
+- R packages can generate code and run it in other languages such as 
+
+    + html, e.g., [Shiny](https://shiny.rstudio.com/), example [here](https://bcjaeger.shinyapps.io/DPE4NHTN_WebApp/)
+    
+    + css, e.g., [minicss](https://coolbutuseless.github.io/2019/09/11/introducing-the-minicss-package-for-creating-css-styles-and-stylesheets-in-r/)
+    
+    + SQL, e.g., [dbplyr](https://dbplyr.tidyverse.org/articles/sql.html)
+
+
+And if you use Rstudio,
+
+- The [reticulate](https://rstudio.github.io/reticulate/) package allows you to run python from R.
+
+- The [usethis](https://usethis.r-lib.org/) package allows you to run git commands from R
+
+---
+background-image: url(img/cars.jpg)
+background-size: 100%
+---
+
+class: center, middle
+
+# .larger[Graphics]
+
+---
+background-image: url(img/gg_layers.png)
+background-size: 60%
+background-position: 90% 50%
+
+## ggplot2
+
+- based on the book:</br>[Grammar of Graphics][gg-book]. 
+
+- You provide the data,</br>tell ggplot2 how to map</br>variables to aesthetics,</br>what geometry</br>to use, and it takes</br>care of the details. 
+
+---
+background-image: url(img/penguins.png)
+background-size: 100%
+
+---
+
+## Data
+
+Data without a mapping is just a blank plot.
+
+```{r}
+
+p <- ggplot(data = penguins)
+
+p
+
+```
+
+---
+
+## Mapping
+
+```{r}
+p <- p +
+ aes(x = flipper_length_mm, y = bill_length_mm, color = species) 
+
+p
+
+```
+
+---
+
+## Geometries
+
+
+```{r}
+p <- p +
+ geom_point()
+
+p
+
+```
+
+
+
+---
+
+## Facets
+
+```{r}
+p <- p +
+ facet_wrap(~island)
+
+p
+
+```
+
+---
+
+## Statistics
+
+```{r}
+p <- p +
+ stat_smooth(method = 'lm')
+
+p
+
+```
+
+---
+
+## Coordinates
+
+```{r}
+p <- p +
+ labs(x = "Flipper length, mm", y = "Bill length, mm")
+
+p
+
+```
+
+
+---
+
+## Theme (pre-built)
+
+```{r}
+p <- p +
+ theme_bw()
+
+p
+
+```
+
+---
+
+## Theme (custom)
+
+```{r}
+p <- p +
+ theme(panel.grid = element_blank())
+
+p
+
+```
+
+---
+
+## Flair
+
+```{r}
+p <- p + 
+ scale_color_manual(values = c("darkorange","purple","cyan4"))
+
+p
+
+```
+
+
+---
+
+## Learning ggplot2
+
+If you are new to ggplot2 you are better off starting with a systematic introduction, rather than trying to learn from reading individual documentation pages. Currently, there are three good places to start:
+
+1.  The [Data Visualisation][r4ds-vis] and
+    [Graphics for communication][r4ds-comm] chapters in 
+    [R for Data Science][r4ds]. R for Data Science is designed to
+    give you a comprehensive introduction to the
+    [tidyverse](https://www.tidyverse.org), and these two chapters will
+    get you up to speed with the essentials of ggplot2 as quickly as 
+    possible.
+    
+1.  If you'd like to take an online course, try
+    [Data Visualization in R With ggplot2][oreilly] by Kara Woo.
+    
+1.  If you'd like to follow a webinar, try
+    [Plotting Anything with ggplot2](https://youtu.be/h29g21z0a68) by Thomas Lin 
+    Pedersen.
+
+1.  If you want to dive into making common graphics as quickly 
+    as possible, I recommend [The R Graphics Cookbook][cookbook] 
+    by Winston Chang. It provides a set of recipes to solve common
+    graphics problems.
+
+.footnote[content on this slide is taken directly from the [ggplot2](https://ggplot2.tidyverse.org/) website]
+
+---
+class: center, middle
+
+# .larger[RMarkdown]
+
+---
+
+## Rmarkdown
+
+The "R Markdown" format was first introduced in early 2012 by the knitr package.
+
+The idea was to embed code chunks (of R or other languages) into Markdown documents.
+
+[Pandoc](http://pandoc.org) allowed conversion of Markdown documents (and many other types of documents) to a variety of output formats.
+
+R Markdown stands on the shoulders of knitr and Pandoc. 
+
+- knitr executes the computer code embedded in Markdown, and converts R Markdown to Markdown. 
+
+- pandoc renders Markdown to the output format you want (such as PDF [LaTeX], HTML, Word, and so on)
+
+.footnote[content on this slide is taken directly from the [Rmarkdown](https://bookdown.org/yihui/rmarkdown/) book, which of course was generated with Rmarkdown]
+
+---
+
+## in html and the web we trust
+
+<p><a href="https://www.rstudio.com/resources/rstudioconf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css/?wvideo=oxxk6afhtz"><img src="https://embed-fastly.wistia.com/deliveries/77d268f4eb298d5f472a509610ee3fcf.jpg?image_play_button_size=2x&amp;image_crop_resized=960x540&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 800px; height: 450px;"></a></p><p><a href="https://www.rstudio.com/resources/rstudioconf-2019/pagedown-creating-beautiful-pdfs-with-r-markdown-and-css/?wvideo=oxxk6afhtz">pagedown: Creating beautiful PDFs with R Markdown and CSS - RStudio</a></p>
+
+---
+
+## One year later
+
+<p><a href="https://www.rstudio.com/resources/rstudioconf-2020/one-r-markdown-document-fourteen-demos/?wvideo=aj3deolth1"><img src="https://embed-fastly.wistia.com/deliveries/995470d4b099ae9b3421014c31c22716.jpg?image_play_button_size=2x&amp;image_crop_resized=960x539&amp;image_play_button=1&amp;image_play_button_color=4287c7e0" width="400" height="225" style="width: 800px; height: 450px;"></a></p><p><a href="https://www.rstudio.com/resources/rstudioconf-2020/one-r-markdown-document-fourteen-demos/?wvideo=aj3deolth1">One R Markdown Document, Fourteen Demos - RStudio</a></p>
+
+---
+
+.largish[How it feels to use RMarkdown (pandoc errors)]
+
+<iframe src="https://giphy.com/embed/BKZJHr1lIFP2w" width="800" height="450" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/BKZJHr1lIFP2w">via GIPHY</a></p>
+
+
+---
+
+class: center, middle
+
+# .larger[Literate programming]
+
+---
+background-image: url(img/composition_function.svg)
+background-size: 90%
+
+## Function composition
+
+---
+
+## Long chains of functions?
+
+Let's say we start with `x`, our input value.
+
+- then compute `f(x)`, 
+
+- and then pass the output of that into `t()`, 
+
+- and pass the output of that to `w()`.
+
+--
+
+Here is what that looks like in R:
+
+```{r, eval = FALSE}
+
+w(t(f(x)))
+
+```
+
+--
+
+Is this readable? 
+
+No. You have to start at the end to read the order of operations correctly.
+
+How can we make the code more friendly to humans?
+
+---
+class: center, middle
+
+.larger[|>]
+
+---
+
+## Pipes
+
+- R version 4.1 introduced the base pipe, `|>`.
+
+- (There is another pipe operator, `%>%`, that is almost the same as `|>`.)
+
+The pipe passes output from one function into another, e.g.:
+
+```{r, eval = FALSE}
+
+x |>     # start with x, then
+ f() |>  # apply f() to x, then
+ t() |>  # apply t to f(x), then
+ w()     # apply w to t(f(x))
+
+```
+
+Why is this readable?
+
+- The pipe has a fairly intuitive meaning: 'then'
+
+- Your eyes move from left to right, top to bottom
+
+- Less complexity per line
+
+---
+class: center, middle
+
+# .larger[Projects]
+
+---
+
+## Projects
+
+One day you will need to quit R, go do something else and return to your analysis the next day. 
+
+One day you will be working on multiple analyses simultaneously that all use R and you want to keep them separate. 
+
+R experts keep all the files associated with a project together:
+
+- input data, 
+
+- R scripts, 
+
+- analytical results, 
+
+- figures. 
+
+This is such a wise and common practice that RStudio has built-in support for this via projects.
+
+Instead of making slides about it, I will take you on a demo of the project where I made this presentation.
+
+.footnote[content on this slide is taken directly from [R for Data Science][r4ds]]
+
+
+[community]: https://community.rstudio.com/
+[ggplot2-book]: https://ggplot2-book.org
+[gg-book]: https://www.amazon.com/Grammar-Graphics-Statistics-Computing/dp/0387245448/ref=as_li_ss_tl
+[so]: https://stackoverflow.com/questions/tagged/ggplot2?sort=frequent&pageSize=50
+[cookbook]: https://r-graphics.org
+[r4ds]: https://r4ds.had.co.nz
+[r4ds-vis]: https://r4ds.had.co.nz/data-visualisation.html
+[r4ds-comm]: https://r4ds.had.co.nz/graphics-for-communication.html
+[oreilly]: https://learning.oreilly.com/videos/data-visualization-in/9781491963661/
