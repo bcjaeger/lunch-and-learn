@@ -59,6 +59,14 @@ style_duo_accent(
 
 ```
 
+# .larger[SLIDES]
+
+https://bcjaeger.github.io/lunch-and-learn/#1
+
+
+---
+class: center, middle
+
 # .larger[HELLO]
 
 My name is Byron
